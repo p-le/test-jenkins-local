@@ -1,0 +1,33 @@
+jenkins:
+  numExecutors: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: ${JENKINS_ADMIN_ID}
+         password: ${JENKINS_ADMIN_PASSWORD}
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - USER:Overall/Administer:${JENKINS_ADMIN_ID}
+        - GROUP:Overall/Read:authenticated
+  nodes:
+    - permanent:
+        labelString: linux
+        launcher:
+          jnlp:
+            workDirSettings:
+              disabled: false
+              failIfWorkDirIsMissing: false
+              internalDir: remoting
+              workDirPath: /home/jenkins
+        name: agent-01
+        remoteFS: /home/jenkins
+        retentionStrategy: always
+security:
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false # ERROR: script not yet approved for use
+unclassified:
+  location:
+    adminAddress: ${JENKINS_ADMIN_EMAIL}
+    url: http://192.168.33.125:8080/

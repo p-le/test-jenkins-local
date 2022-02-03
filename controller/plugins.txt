@@ -1,0 +1,6 @@
+git:4.10.3
+configuration-as-code:1.55.1
+matrix-auth:3.0.1
+job-dsl:1.78.3
+docker-plugin:1.2.6
+authorize-project:1.4.0

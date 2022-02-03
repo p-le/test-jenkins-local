@@ -1,0 +1,38 @@
+version: '3'
+services:
+  controller:
+    container_name: jenkin-controller
+    image: jenkins-controller:dev
+    build: ./controller
+    volumes:
+      - /var/run/docker.sock:/usr/share/jenkins/ref/docker.sock
+      - jenkins_home:/var/jenkins_home
+    environment:
+      TZ: Asia/Tokyo
+      JENKINS_ADMIN_ID: admin
+      JENKINS_ADMIN_PASSWORD: admin
+      JENKINS_ADMIN_EMAIL: phu.le.dev@gmail.com
+    ports:
+      - "8080:8080"
+
+  agent-01:
+    container_name: jenkin-agent-01
+    image: jenkins-agent:dev
+    build: ./inbound-agent
+    init: true
+    entrypoint: /usr/local/bin/wait-for-it.sh
+    command:
+      - controller:50000
+      - --timeout=30
+      - --
+      - /usr/local/bin/jenkins-agent
+    environment:
+      JENKINS_URL: http://controller:8080
+      JENKINS_AGENT_NAME: agent-01
+      JENKINS_SECRET: 47361a917b2ea943b0b7570ee56bdac33bd8e7fb52cf5b87c6e873b721ec9548
+      JENKINS_AGENT_WORKDIR: /home/jenkins
+    depends_on: 
+      - controller
+
+volumes:
+  jenkins_home:
